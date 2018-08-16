@@ -1,5 +1,6 @@
 package org.hswebframework.web.workflow.service.imp;
 
+import org.hswebframework.web.commons.entity.DataStatus;
 import org.hswebframework.web.dao.CrudDao;
 import org.hswebframework.web.id.IDGenerator;
 import org.hswebframework.web.service.EnableCacheGenericEntityService;
@@ -46,6 +47,7 @@ public class ActivityConfigServiceImpl extends GenericEntityService<ActivityConf
     public String insert(ActivityConfigEntity entity) {
         entity.setCreateTime(new Date());
         entity.setUpdateTime(new Date());
+        entity.setStatus(DataStatus.STATUS_ENABLED);
         return super.insert(entity);
     }
 
@@ -57,6 +59,24 @@ public class ActivityConfigServiceImpl extends GenericEntityService<ActivityConf
     public int updateByPk(String pk, ActivityConfigEntity entity) {
         entity.setUpdateTime(new Date());
         return super.updateByPk(pk, entity);
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(key = "'define-id:'+#entity.processDefineId+'-'+#entity.activityId"),
+            @CacheEvict(key = "'define-key:'+#entity.processDefineKey+'-'+#entity.activityId")
+    })
+    protected int updateByPk(ActivityConfigEntity entity) {
+        return super.updateByPk(entity);
+    }
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(key = "'define-id:'+#entity.processDefineId+'-'+#entity.activityId"),
+            @CacheEvict(key = "'define-key:'+#entity.processDefineKey+'-'+#entity.activityId")
+    })
+    public String saveOrUpdate(ActivityConfigEntity entity) {
+        return super.saveOrUpdate(entity);
     }
 
     @Override

@@ -4,6 +4,8 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.task.Task;
 import org.hswebframework.web.workflow.service.request.CompleteTaskRequest;
+import org.hswebframework.web.workflow.service.request.JumpTaskRequest;
+import org.hswebframework.web.workflow.service.request.RejectTaskRequest;
 
 import java.util.Collection;
 import java.util.List;
@@ -69,24 +71,6 @@ public interface BpmTaskService {
 
 
     /**
-     * 预留等待签收的任务
-     *
-     * @param userId 用户id
-     * @return 任务信息
-     * @throws Exception
-     */
-    List<Task> claimList(String userId);
-
-    /**
-     * 已签收待办理的任务
-     *
-     * @param userId 用户id
-     * @return 任务信息
-     * @throws Exception
-     */
-    List<Task> todoList(String userId);
-
-    /**
      * 完成任务
      *
      * @param request 完成任务请求
@@ -95,26 +79,13 @@ public interface BpmTaskService {
 
     /**
      * 流程任意跳转
-     *
-     * @param procInstId 流程实例ID
-     * @param activity   流程环节ID
      */
-    Task jumpTask(String procInstId, String activity);
+    void jumpTask(JumpTaskRequest request);
 
     /**
-     * 驳回
-     *
-     * @param taskId
+     * 驳回任务
      */
-    void reject(String taskId);
-
-    /**
-     * 设置办理人
-     *
-     * @param taskId 当前环节ID
-     * @param userId 用户ID
-     */
-    void setAssignee(String taskId, String userId);
+    void reject(RejectTaskRequest request);
 
     /**
      * 结束流程

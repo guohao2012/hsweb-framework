@@ -8,6 +8,8 @@ import org.hswebframework.web.validator.group.CreateGroup;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -33,11 +35,6 @@ public class ProcessDefineConfigEntity extends SimpleGenericEntity<String> {
     private String formId;
 
     /**
-     * 前端表单模版ID
-     */
-    private String formTemplateId;
-
-    /**
      * 权限维度,用于控制不同人,可发起不同的流程
      */
     private String permissionDimension;
@@ -51,4 +48,7 @@ public class ProcessDefineConfigEntity extends SimpleGenericEntity<String> {
      */
     @NotNull(groups = CreateGroup.class)
     private Byte status;
+
+    private List<ListenerConfig> listeners;
+
 }
