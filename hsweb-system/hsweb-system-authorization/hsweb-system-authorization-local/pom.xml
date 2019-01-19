@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <version>3.0.0-1-RC-SNAPSHOT</version>
     <artifactId>hsweb-system-authorization-local</artifactId>
 
     <dependencies>
@@ -21,19 +22,19 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-api</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-1-RC-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-commons-dao-mybatis</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-commons-service-simple</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

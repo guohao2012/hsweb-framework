@@ -33,6 +33,9 @@ public interface UserEntity extends GenericEntity<String>, RecordCreationEntity 
     @SuppressWarnings("all")
     String password = "password";
     String status = "status";
+    String enterpriseId = null;
+
+    String governmentId = null;
 
     void setName(String name);
 
@@ -61,6 +64,12 @@ public interface UserEntity extends GenericEntity<String>, RecordCreationEntity 
     Byte getStatus();
 
     void setStatus(Byte status);
+
+    String getEnterpriseId();
+    void setEnterpriseId(String enterpriseId);
+
+    String getGovernmentId();
+    void setGovernmentId(String governmentId);
 
     @Override
     UserEntity clone();

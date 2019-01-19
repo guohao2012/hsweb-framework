@@ -9,19 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <version>3.0.0-1-RC-SNAPSHOT</version>
     <artifactId>hsweb-system-authorization-api</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-commons-service-api</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-authorization-api</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
         </dependency>
 
 

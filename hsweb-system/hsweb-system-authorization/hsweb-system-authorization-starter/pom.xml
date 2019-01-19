@@ -26,6 +26,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <version>3.0.0-1-RC-SNAPSHOT</version>
     <artifactId>hsweb-system-authorization-starter</artifactId>
 
     <build>
@@ -41,12 +42,12 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-local</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-1-RC-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-web</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-1-RC-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -58,7 +59,7 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-authorization-basic</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
 
@@ -84,14 +85,14 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-spring-boot-starter</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-tests</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-RC-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 

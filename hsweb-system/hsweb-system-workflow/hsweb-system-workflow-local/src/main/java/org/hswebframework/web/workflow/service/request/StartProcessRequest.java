@@ -3,8 +3,6 @@ package org.hswebframework.web.workflow.service.request;
 import lombok.*;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hswebframework.web.authorization.Authentication;
-import org.hswebframework.web.authorization.User;
 import org.hswebframework.web.commons.bean.ValidateBean;
 
 import java.util.HashMap;
@@ -35,9 +33,6 @@ public class StartProcessRequest implements ValidateBean {
     /**
      * 流程发起人ID
      *
-     * @see Authentication#current()
-     * @see Authentication#getUser()
-     * @see User#getId()
      */
     @NotBlank
     private String creatorId;
@@ -45,7 +40,6 @@ public class StartProcessRequest implements ValidateBean {
     /**
      * 流程发起人姓名
      *
-     * @see User#getName()
      */
     @NotBlank
     private String creatorName;

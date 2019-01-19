@@ -48,6 +48,8 @@ function install(context) {
         .addColumn().name("last_login_time").number(32).comment("上一次登录时间").commit()
         .addColumn().name("creator_id").varchar(32).comment("创建者ID").commit()
         .addColumn().name("create_time").number(32).notNull().comment("创建时间").commit()
+        .addColumn().name("enterprise_id").varchar(32).comment("企业ID").commit()
+        .addColumn().name("government_id").varchar(32).comment("邮管局id").commit()
         .comment("用户表").commit();
 
     database.createOrAlter("s_role")

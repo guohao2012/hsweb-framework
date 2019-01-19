@@ -20,18 +20,26 @@ package org.hswebframework.web.authorization.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.hswebframework.ezorm.core.param.TermType;
 import org.hswebframework.web.authorization.Permission;
 import org.hswebframework.web.authorization.annotation.Authorize;
+import org.hswebframework.web.commons.entity.PagerResult;
 import org.hswebframework.web.commons.entity.param.QueryParamEntity;
 import org.hswebframework.web.controller.SimpleGenericEntityController;
 import org.hswebframework.web.controller.message.ResponseMessage;
 import org.hswebframework.web.entity.authorization.RoleEntity;
+import org.hswebframework.web.entity.authorization.UserEntity;
+import org.hswebframework.web.logging.AccessLogger;
 import org.hswebframework.web.service.authorization.RoleService;
+import org.hswebframework.web.service.authorization.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hswebframework.web.controller.message.ResponseMessage.ok;
 
@@ -48,6 +56,8 @@ public class RoleController implements SimpleGenericEntityController<RoleEntity,
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public RoleService getService() {
@@ -68,5 +78,45 @@ public class RoleController implements SimpleGenericEntityController<RoleEntity,
     public ResponseMessage enable(@PathVariable String id) {
         roleService.enable(id);
         return ok();
+    }
+
+    @Override
+    public ResponseMessage<PagerResult<RoleEntity>> list(QueryParamEntity param) {
+        PagerResult<RoleEntity> result = getService().selectPager(param);
+        List<String> creatorIdList = result.getData().stream().map(role -> role.getCreatorId()).distinct().collect(Collectors.toList());
+        List<UserEntity> userList = this.userService.selectByPk(creatorIdList);
+        result.getData().stream().forEach(role -> {
+            if(role.getCreatorId() != null){
+                role.setCreator(userList.stream().filter(user -> user.getId().equals(role.getCreatorId())).findFirst().get());
+            }
+        });
+        return ok(result);
+    }
+
+
+    @Authorize(action = Permission.ACTION_DELETE)
+    @DeleteMapping("/batchDelete")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "批量删除")
+    @AccessLogger(value = "批量删除")
+    public ResponseMessage<String> batchDelete(@RequestParam @ApiParam("所有id拼成的串，以逗号隔开") String ids){
+        ResponseMessage<String> result = ok("").code("1");
+        String[] idsArray = ids.split(",");
+        List<String> idsListString = Arrays.asList(idsArray);
+        List<String> idsList = (List<String>)idsListString;
+        List<RoleEntity> existList = this.getService().select(QueryParamEntity.empty().and("id", TermType.in, idsList));
+        if(existList == null || existList.size() == 0) {
+            result.setMessage("要删除的数据不存在");
+            return result;
+        }
+        if(existList.size() < idsList.size()){
+            result.setMessage("部分要删除的数据不存在");
+            return result;
+        }
+        this.getService().batchDelete(idsList);
+        result.code("0");
+        result.setMessage("删除成功");
+        return result;
+
     }
 }

@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-api</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-1-RC-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.hswebframework.web</groupId>
@@ -183,6 +183,12 @@
             <artifactId>druid</artifactId>
             <version>1.0.26</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hswebframework.web</groupId>
+            <artifactId>hsweb-authorization-api</artifactId>
+            <version>3.0.1-RC-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

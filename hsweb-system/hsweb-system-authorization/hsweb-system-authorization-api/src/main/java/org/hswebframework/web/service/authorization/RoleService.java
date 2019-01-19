@@ -3,6 +3,8 @@ package org.hswebframework.web.service.authorization;
 import org.hswebframework.web.entity.authorization.RoleEntity;
 import org.hswebframework.web.service.CrudService;
 
+import java.util.List;
+
 /**
  * 角色服务,就是一个简单的crud
  *
@@ -27,4 +29,6 @@ public interface RoleService extends CrudService<RoleEntity, String> {
      * @see org.hswebframework.web.commons.entity.DataStatus#STATUS_DISABLED
      */
     void disable(String roleId);
+
+    void batchDelete(List<String> ids);
 }

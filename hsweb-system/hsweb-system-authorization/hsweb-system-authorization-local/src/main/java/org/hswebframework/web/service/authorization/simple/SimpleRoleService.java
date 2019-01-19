@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * TODO 完成注释
  *
@@ -77,5 +79,10 @@ public class SimpleRoleService extends GenericEntityService<RoleEntity, String> 
                 .set(RoleEntity.status, DataStatus.STATUS_DISABLED)
                 .where(RoleEntity.id, roleId)
                 .exec();
+    }
+
+    @Override
+    public void batchDelete(List<String> ids) {
+        getDao().batchDelete(ids);
     }
 }

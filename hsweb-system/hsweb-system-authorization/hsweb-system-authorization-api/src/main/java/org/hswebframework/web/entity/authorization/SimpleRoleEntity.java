@@ -14,10 +14,11 @@ import org.hswebframework.web.commons.entity.SimpleGenericEntity;
 public class SimpleRoleEntity extends SimpleGenericEntity<String> implements RoleEntity {
     private static final long serialVersionUID = -2857131363164004807L;
     private String name;
-
+    private Long createTime ;
+    private String creatorId ;
     private String describe;
-
     private Byte status;
+    private UserEntity creator;
 
     @Override
     public SimpleRoleEntity clone() {
