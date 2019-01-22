@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright 2016 http://www.hswebframework.org
+ *  * Copyright 2019 http://www.hswebframework.org
  *  *
  *  * Licensed under the Apache License, Version 2.0 (the "License");
  *  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 package org.hswebframework.web.dao.mybatis.builder;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.ibatis.mapping.ResultMap;
@@ -60,6 +61,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author zhouhao
  * @since 2.0
  */
+@Slf4j
 public class EasyOrmSqlBuilder {
 
     public volatile boolean useJpa = false;
@@ -96,31 +98,6 @@ public class EasyOrmSqlBuilder {
         simpleName.put(short.class, "short");
         simpleName.put(char.class, "char");
         simpleName.put(byte.class, "byte");
-//
-//        Dialect.MYSQL.setTermTypeMapper(TermType.eq, supportArray(new EnumDicTermTypeMapper(Dialect.MYSQL, false)));
-//        Dialect.MYSQL.setTermTypeMapper(TermType.in, supportArray(new MysqlEnumDicInTermTypeMapper(false)));
-//        Dialect.MYSQL.setTermTypeMapper(TermType.not, supportArray(new EnumDicTermTypeMapper(Dialect.MYSQL, true)));
-//        Dialect.MYSQL.setTermTypeMapper(TermType.nin, supportArray(new MysqlEnumDicInTermTypeMapper(true)));
-//
-//        Dialect.MYSQL.setTermTypeMapper("ain", supportArray(new MysqlEnumDicInTermTypeMapper(true, true)));
-//        Dialect.MYSQL.setTermTypeMapper("anin", supportArray(new MysqlEnumDicInTermTypeMapper(false, true)));
-//
-//
-//        Dialect.H2.setTermTypeMapper(TermType.eq, supportArray(new EnumDicTermTypeMapper(Dialect.H2, false)));
-//        Dialect.H2.setTermTypeMapper(TermType.in, supportArray(new H2EnumDicInTermTypeMapper(false)));
-//        Dialect.H2.setTermTypeMapper(TermType.not, supportArray(new EnumDicTermTypeMapper(Dialect.H2, true)));
-//        Dialect.H2.setTermTypeMapper(TermType.nin, supportArray(new H2EnumDicInTermTypeMapper(true)));
-//        Dialect.H2.setTermTypeMapper("ain", supportArray(new H2EnumDicInTermTypeMapper(true, true)));
-//        Dialect.H2.setTermTypeMapper("anin", supportArray(new H2EnumDicInTermTypeMapper(false, true)));
-//
-//
-//        Dialect.ORACLE.setTermTypeMapper(TermType.eq, supportArray(new EnumDicTermTypeMapper(Dialect.ORACLE, false)));
-//        Dialect.ORACLE.setTermTypeMapper(TermType.in, supportArray(new OracleEnumDicInTermTypeMapper(false)));
-//        Dialect.ORACLE.setTermTypeMapper(TermType.not, supportArray(new EnumDicTermTypeMapper(Dialect.ORACLE, true)));
-//        Dialect.ORACLE.setTermTypeMapper(TermType.nin, supportArray(new OracleEnumDicInTermTypeMapper(true)));
-//        Dialect.ORACLE.setTermTypeMapper("ain", supportArray(new OracleEnumDicInTermTypeMapper(true, true)));
-//        Dialect.ORACLE.setTermTypeMapper("anin", supportArray(new OracleEnumDicInTermTypeMapper(false, true)));
-
     }
 
     public static String getJavaType(Class type) {
@@ -161,7 +138,19 @@ public class EasyOrmSqlBuilder {
         }
     }
 
+    private String getRealTableName(String tableName) {
+
+        String newTable = DataSourceHolder.tableSwitcher().getTable(tableName);
+
+        if (!tableName.equals(newTable)) {
+            log.debug("use new table [{}] for [{}]", newTable, tableName);
+        }
+        return newTable;
+
+    }
+
     protected RDBTableMetaData createMeta(String tableName, String resultMapId) {
+        tableName = getRealTableName(tableName);
         RDBDatabaseMetaData active = getActiveDatabase();
         String cacheKey = tableName.concat("-").concat(resultMapId);
         Map<String, RDBTableMetaData> cache = metaCache.get(active);
@@ -186,20 +175,19 @@ public class EasyOrmSqlBuilder {
                 }
                 column.setJavaType(resultMapping.getJavaType());
                 column.setProperty("resultMapping", resultMapping);
-                ValueConverter dateConvert = new DateTimeConverter("yyyy-MM-dd HH:mm:ss", column.getJavaType()) {
-                    @Override
-                    public Object getData(Object value) {
-                        if (value instanceof Number) {
-                            return new Date(((Number) value).longValue());
+                //时间
+                if (column.getJdbcType() == JDBCType.DATE || column.getJdbcType() == JDBCType.TIMESTAMP) {
+                    ValueConverter dateConvert = new DateTimeConverter("yyyy-MM-dd HH:mm:ss", column.getJavaType()) {
+                        @Override
+                        public Object getData(Object value) {
+                            if (value instanceof Number) {
+                                return new Date(((Number) value).longValue());
+                            }
+                            return super.getData(value);
                         }
-                        return super.getData(value);
-                    }
-                };
-                if (column.getJdbcType() == JDBCType.DATE) {
+                    };
                     column.setValueConverter(dateConvert);
-                } else if (column.getJdbcType() == JDBCType.TIMESTAMP) {
-                    column.setValueConverter(dateConvert);
-                } else if (column.getJdbcType() == JDBCType.NUMERIC) {
+                } else if (TypeUtils.isNumberType(column)) { //数字
                     column.setValueConverter(new NumberValueConverter(column.getJavaType()));
                 }
                 rdbTableMetaData.addColumn(column);
@@ -296,6 +284,7 @@ public class EasyOrmSqlBuilder {
         SqlRender<UpdateParam> render = tableMetaData.getDatabaseMetaData().getRenderer(SqlRender.TYPE.UPDATE);
         return render.render(tableMetaData, param).getSql();
     }
+
     public String buildSelectFields(String resultMapId, String tableName, Object arg) {
         QueryParam param = null;
         if (arg instanceof QueryParam) {
@@ -322,7 +311,7 @@ public class EasyOrmSqlBuilder {
             }
             String cname = columnMetaData.getName();
             if (!cname.contains(".")) {
-                cname = tableName.concat(".").concat(cname);
+                cname = tableMetaData.getName().concat(".").concat(cname);
             }
             boolean isJpa = columnMetaData.getProperty("fromJpa", false).isTrue();
 
@@ -362,7 +351,7 @@ public class EasyOrmSqlBuilder {
                     }
                     String cname = column.getName();
                     if (!cname.contains(".")) {
-                        cname = tableName.concat(".").concat(cname);
+                        cname = tableMetaData.getName().concat(".").concat(cname);
                     }
                     appender.add(encodeColumn(tableMetaData.getDatabaseMetaData().getDialect(), cname), " ", sort.getOrder(), ",");
                 });

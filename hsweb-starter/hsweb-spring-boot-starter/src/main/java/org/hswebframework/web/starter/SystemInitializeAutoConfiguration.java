@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright 2016 http://www.hswebframework.org
+ *  * Copyright 2019 http://www.hswebframework.org
  *  *
  *  * Licensed under the Apache License, Version 2.0 (the "License");
  *  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 package org.hswebframework.web.starter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hswebframework.ezorm.rdb.executor.SqlExecutor;
 import org.hswebframework.ezorm.rdb.meta.RDBDatabaseMetaData;
 import org.hswebframework.ezorm.rdb.meta.parser.H2TableMetaParser;
@@ -63,6 +64,7 @@ import java.util.stream.Stream;
 @Configuration
 @EnableConfigurationProperties(AppProperties.class)
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@Slf4j
 public class SystemInitializeAutoConfiguration implements CommandLineRunner, BeanPostProcessor {
 
     @Autowired
@@ -107,9 +109,14 @@ public class SystemInitializeAutoConfiguration implements CommandLineRunner, Bea
 
     @Override
     public void run(String... args) throws Exception {
+
+        if (!appProperties.isAutoInit()) {
+            log.debug("app auto init is disabled");
+            return;
+        }
         DatabaseType type = DataSourceHolder.currentDatabaseType();
         SystemVersion version = appProperties.build();
-        if(version.getName()==null){
+        if (version.getName() == null) {
             version.setName("unknown");
         }
         Connection connection = null;
@@ -150,7 +157,7 @@ public class SystemInitializeAutoConfiguration implements CommandLineRunner, Bea
 
         initialize.addScriptContext("db", jdbcUserName);
         initialize.addScriptContext("dbType", type.name());
-
+        initialize.setExcludeTables(appProperties.getInitTableExcludes());
         initialize.install();
     }
 

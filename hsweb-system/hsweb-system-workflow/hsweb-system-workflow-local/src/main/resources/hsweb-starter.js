@@ -23,8 +23,8 @@ function install(context) {
     var database = context.database;
     database.createOrAlter("s_wf_proc_conf")
         .addColumn().name("u_id").alias("id").comment("ID").jdbcType(java.sql.JDBCType.VARCHAR).length(32).primaryKey().commit()
-        .addColumn().name("proc_def_key").alias("processDefineKey").comment("模板定义KEY").jdbcType(java.sql.JDBCType.VARCHAR).length(32).commit()
-        .addColumn().name("proc_def_id").alias("processDefineId").comment("模板定义ID").jdbcType(java.sql.JDBCType.VARCHAR).length(32).commit()
+        .addColumn().name("proc_def_key").alias("processDefineKey").comment("模板定义KEY").jdbcType(java.sql.JDBCType.VARCHAR).length(64).commit()
+        .addColumn().name("proc_def_id").alias("processDefineId").comment("模板定义ID").jdbcType(java.sql.JDBCType.VARCHAR).length(64).commit()
         .addColumn().name("form_id").alias("formId").comment("表单ID").length(32).jdbcType(java.sql.JDBCType.VARCHAR).commit()
         .addColumn().name("permission_dimension").alias("permissionDimension").comment("启动权限配置").jdbcType(java.sql.JDBCType.CLOB).length(32).commit()
         .addColumn().name("properties").alias("properties").comment("其他配置").jdbcType(java.sql.JDBCType.CLOB).commit()
@@ -32,14 +32,17 @@ function install(context) {
         .addColumn().name("update_time").alias("updateTime").comment("修改时间").datetime().commit()
         .addColumn().name("status").alias("status").comment("状态").jdbcType(java.sql.JDBCType.TINYINT).commit()
         .addColumn().name("listeners").alias("listeners").comment("监听器配置").jdbcType(java.sql.JDBCType.CLOB).commit()
+        .index().name("idx_proc_def_key").column("proc_def_key").commit()
+        .index().name("idx_proc_def_id").column("proc_def_id").commit()
+
         .comment("工作流流程自定义配置")
         .commit();
 
     database.createOrAlter("s_wf_act_conf")
         .addColumn().name("u_id").alias("id").comment("ID").jdbcType(java.sql.JDBCType.VARCHAR).length(32).primaryKey().commit()
-        .addColumn().name("proc_def_key").alias("processDefineKey").comment("模板定义KEY").jdbcType(java.sql.JDBCType.VARCHAR).length(32).commit()
-        .addColumn().name("proc_def_id").alias("processDefineId").comment("模板定义ID").jdbcType(java.sql.JDBCType.VARCHAR).length(32).commit()
-        .addColumn().name("act_id").alias("activityId").comment("元图ID").jdbcType(java.sql.JDBCType.VARCHAR).length(32).commit()
+        .addColumn().name("proc_def_key").alias("processDefineKey").comment("模板定义KEY").jdbcType(java.sql.JDBCType.VARCHAR).length(64).commit()
+        .addColumn().name("proc_def_id").alias("processDefineId").comment("模板定义ID").jdbcType(java.sql.JDBCType.VARCHAR).length(64).commit()
+        .addColumn().name("act_id").alias("activityId").comment("元图ID").jdbcType(java.sql.JDBCType.VARCHAR).length(64).commit()
         .addColumn().name("form_id").alias("formId").comment("表单ID").length(32).jdbcType(java.sql.JDBCType.VARCHAR).commit()
         .addColumn().name("candidate_dimension").alias("candidateDimension").comment("候选人维度").jdbcType(java.sql.JDBCType.CLOB).length(32).commit()
         .addColumn().name("create_time").alias("createTime").comment("创建时间").datetime().commit()
@@ -47,6 +50,9 @@ function install(context) {
         .addColumn().name("status").alias("status").comment("状态").jdbcType(java.sql.JDBCType.TINYINT).commit()
         .addColumn().name("properties").alias("properties").comment("其他配置").jdbcType(java.sql.JDBCType.CLOB).commit()
         .addColumn().name("listeners").alias("listeners").comment("监听器配置").jdbcType(java.sql.JDBCType.CLOB).commit()
+        .index().name("idx_act_proc_def_id").column("proc_def_id").commit()
+        .index().name("idx_act_proc_def_key").column("proc_def_key").commit()
+
         .comment("工作流环节自定义配置")
         .commit();
 
@@ -64,6 +70,9 @@ function install(context) {
         .addColumn().name("create_time").alias("createTime").notNull().comment("创建时间").datetime().commit()
         .addColumn().name("creator_id").alias("creatorId").length(32).notNull().comment("创建人ID").jdbcType(java.sql.JDBCType.VARCHAR).commit()
         .addColumn().name("creator_name").alias("creatorName").length(32).notNull().comment("创建人姓名").jdbcType(java.sql.JDBCType.VARCHAR).commit()
+        .index().name("idx_proc_his_def_id").column("proc_def_id").commit()
+        .index().name("idx_proc_his_ins_id").column("proc_ins_id").commit()
+        .index().name("idx_proc_his_task_id").column("task_id").commit()
         .comment("工作流流程历史")
         .commit();
 }

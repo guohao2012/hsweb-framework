@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ /*
-  ~  * Copyright 2016 http://www.hswebframework.org
+  ~  * Copyright 2019 http://www.hswebframework.org
   ~  *
   ~  * Licensed under the Apache License, Version 2.0 (the "License");
   ~  * you may not use this file except in compliance with the License.
@@ -23,13 +23,15 @@
     <parent>
         <artifactId>hsweb-commons-service</artifactId>
         <groupId>org.hswebframework.web</groupId>
-        <version>3.0.0-RC-SNAPSHOT</version>
+        <version>3.0.5</version>
         <relativePath>../pom.xml</relativePath>
 
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hsweb-commons-service-simple</artifactId>
+
+    <description>通用增删改查-通用服务本地实现模块</description>
 
     <dependencies>
         <dependency>
@@ -59,9 +61,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

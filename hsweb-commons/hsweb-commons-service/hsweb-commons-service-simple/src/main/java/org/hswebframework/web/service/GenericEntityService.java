@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright 2016 http://www.hswebframework.org
+ *  * Copyright 2019 http://www.hswebframework.org
  *  *
  *  * Licensed under the Apache License, Version 2.0 (the "License");
  *  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.hswebframework.web.validator.group.UpdateGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -60,7 +61,7 @@ public abstract class GenericEntityService<E extends GenericEntity<PK>, PK>
 
     @PostConstruct
     public void init() {
-        if (null != logicPrimaryKeyValidator && logicPrimaryKeyValidator instanceof DefaultLogicPrimaryKeyValidator) {
+        if (logicPrimaryKeyValidator instanceof DefaultLogicPrimaryKeyValidator) {
             DefaultLogicPrimaryKeyValidator.registerQuerySuppiler(getEntityInstanceType(), bean -> this.createQuery().not("id", bean.getId()));
         }
     }
@@ -122,13 +123,13 @@ public abstract class GenericEntityService<E extends GenericEntity<PK>, PK>
 
     @Override
     public PK insert(E entity) {
-        if (entity.getId() != null) {
+        if (!StringUtils.isEmpty(entity.getId())) {
             if ((entity.getId() instanceof String) && !StringUtils.isEmpty(entity.getId())) {
                 tryValidateProperty(entity.getId().toString().matches("[a-zA-Z0-9_\\-]+"), "id", "只能由数字,字母,下划线,和-组成");
             }
             tryValidateProperty(selectByPk(entity.getId()) == null, "id", entity.getId() + "已存在");
         }
-        if (entity.getId() == null && getIDGenerator() != null) {
+        if (StringUtils.isEmpty(entity.getId()) && getIDGenerator() != null) {
             entity.setId(getIDGenerator().generate());
         }
         if (entity instanceof RecordCreationEntity) {
@@ -142,7 +143,7 @@ public abstract class GenericEntityService<E extends GenericEntity<PK>, PK>
     @Override
     @Transactional(readOnly = true)
     public E selectByPk(PK pk) {
-        if (null == pk) {
+        if (StringUtils.isEmpty(pk)) {
             return null;
         }
         return createQuery().where(GenericEntity.id, pk).single();
@@ -151,7 +152,7 @@ public abstract class GenericEntityService<E extends GenericEntity<PK>, PK>
     @Override
     @Transactional(readOnly = true)
     public List<E> selectByPk(List<PK> id) {
-        if (id == null || id.isEmpty()) {
+        if (CollectionUtils.isEmpty(id)) {
             return new ArrayList<>();
         }
         return createQuery().where().in(GenericEntity.id, id).listNoPaging();
