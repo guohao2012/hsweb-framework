@@ -11,7 +11,7 @@
 
     <artifactId>hsweb-system-authorization-web</artifactId>
 
-    <version>3.0.0-1-RC-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-api</artifactId>
-            <version>3.0.0-1-RC-SNAPSHOT</version>
+            <version>3.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.hswebframework.web</groupId>

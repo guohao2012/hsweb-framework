@@ -26,7 +26,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>3.0.0-1-RC-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <artifactId>hsweb-system-authorization-starter</artifactId>
 
     <build>
@@ -42,12 +42,12 @@
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-local</artifactId>
-            <version>3.0.0-1-RC-SNAPSHOT</version>
+            <version>3.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.hswebframework.web</groupId>
             <artifactId>hsweb-system-authorization-web</artifactId>
-            <version>3.0.0-1-RC-SNAPSHOT</version>
+            <version>3.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
